@@ -3,6 +3,8 @@
 
 # exposr
 
+![](man/figures/exposr-hex.png)
+
 <!-- badges: start -->
 <!-- badges: end -->
 
