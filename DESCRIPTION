@@ -17,3 +17,4 @@ Imports:
     tidyr
 URL: https://github.com/TheoPapath/exposr
 BugReports: https://github.com/TheoPapath/exposr/issues
+RoxygenNote: 7.3.1
