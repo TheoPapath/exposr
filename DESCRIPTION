@@ -15,3 +15,5 @@ Imports:
     patchwork,
     rlang,
     tidyr
+URL: https://github.com/TheoPapath/exposr
+BugReports: https://github.com/TheoPapath/exposr/issues
