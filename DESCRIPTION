@@ -1,0 +1,17 @@
+Package: exposr
+Title: Exposure–Response and Pharmacometric Utility Functions
+Version: 0.0.1
+Authors@R: 
+    person("Theodoros", "Papathanasiou", email = "theo.x.papathanasiou@gsk.com", role = c("aut", "cre"))
+Description: Utilities for pharmacometric exposure–response visualization and simulation. Provides plotting functions, model overlays, dose binning, and flexible clinical trial scenario analysis.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    ggplot2,
+    Hmisc,
+    minpack.lm,
+    patchwork,
+    rlang,
+    tidyr
