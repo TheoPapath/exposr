@@ -109,34 +109,36 @@ plot_logistic_exposure_response <- function(
   if (return_data) return(list(summary = bin_summary, model = model_fit))
 }
 
-set.seed(123)
-n <- 600
-sim_data <- tibble(
-  subject = 1:n,
-  dose = rep(c(10, 30, 100), each = n / 3),
-  clearance = rlnorm(n, log(10), 0.4),
-  group = rep(c("A", "B"), length.out = n)
-) %>%
-  mutate(
-    exposure = dose / clearance,
-    logit_p = -2 + 0.8 * log(exposure) + ifelse(group == "B", 0.5, 0),
-    response = rbinom(n, size = 1, prob = plogis(logit_p))
-  )
-
-plot_logistic_exposure_response(
-  data = sim_data,
-  dose_var = "dose",
-  exposure_var = "exposure",
-  response_var = "response",
-  group_var = "group",
-  y_scale = "proportion"
-)
-
-plot_logistic_exposure_response(
-  data = sim_data,
-  dose_var = "dose",
-  exposure_var = "exposure",
-  response_var = "response",
-  group_var = "group",
-  y_scale = "predicted"
-)
+# Examples
+#
+# set.seed(123)
+# n <- 600
+# sim_data <- tibble(
+#   subject = 1:n,
+#   dose = rep(c(10, 30, 100), each = n / 3),
+#   clearance = rlnorm(n, log(10), 0.4),
+#   group = rep(c("A", "B"), length.out = n)
+# ) %>%
+#   mutate(
+#     exposure = dose / clearance,
+#     logit_p = -2 + 0.8 * log(exposure) + ifelse(group == "B", 0.5, 0),
+#     response = rbinom(n, size = 1, prob = plogis(logit_p))
+#   )
+#
+# plot_logistic_exposure_response(
+#   data = sim_data,
+#   dose_var = "dose",
+#   exposure_var = "exposure",
+#   response_var = "response",
+#   group_var = "group",
+#   y_scale = "proportion"
+# )
+#
+# plot_logistic_exposure_response(
+#   data = sim_data,
+#   dose_var = "dose",
+#   exposure_var = "exposure",
+#   response_var = "response",
+#   group_var = "group",
+#   y_scale = "predicted"
+# )

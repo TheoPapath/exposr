@@ -8,7 +8,7 @@ simulate_loglinear(
   dose_levels,
   n_per_dose,
   e0,
-  e1,
+  delta,
   log_shift = 1,
   sigma,
   dist = "normal",
@@ -21,9 +21,9 @@ simulate_loglinear(
 
 \item{n_per_dose}{Either a single integer (equal sample size per dose) or a vector matching `dose_levels`.}
 
-\item{e0}{Baseline effect.}
+\item{e0}{Baseline effect. Can be a scalar or a vector.}
 
-\item{e1}{Slope of the log-linear relationship.}
+\item{delta}{Slope of the log-linear relationship.}
 
 \item{log_shift}{Value added inside the log to avoid log(0). Default is 1.}
 
@@ -36,17 +36,20 @@ simulate_loglinear(
 \item{seed}{Optional seed for reproducibility.}
 }
 \value{
-Data frame with columns: `id`, `dose`, `pred`, `ipred`.
+Data frame with columns: `id`, `dose`, `pred`, `ipred`, `scenario`.
 }
 \description{
 Simulates from a log-linear dose-response model:
-\deqn{pred = e0 + e1 * log(dose + log_shift)}
+\deqn{pred = e0 + delta * log(dose + log_shift)}
+}
+\details{
+All combinations of `e0`, `delta`, and `log_shift` will be simulated.
 }
 \examples{
 simulate_loglinear(
   dose_levels = c(0, 1, 5, 10),
   n_per_dose = 10,
-  e0 = 0, e1 = 1.5, log_shift = 1,
+  e0 = c(0, 0.1), delta = c(1.5, 1.8), log_shift = c(0.5, 1),
   sigma = 0.2,
   dist = "normal",
   seed = 100

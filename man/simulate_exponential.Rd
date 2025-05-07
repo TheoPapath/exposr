@@ -21,7 +21,7 @@ simulate_exponential(
 
 \item{n_per_dose}{Either a single integer (equal sample size per dose) or a vector matching `dose_levels`.}
 
-\item{e0}{Baseline effect.}
+\item{e0}{Baseline effect. Can be a scalar or a vector.}
 
 \item{e1}{Maximum effect.}
 
@@ -36,11 +36,14 @@ simulate_exponential(
 \item{seed}{Optional seed for reproducibility.}
 }
 \value{
-Data frame with columns: `id`, `dose`, `pred`, `ipred`.
+Data frame with columns: `id`, `dose`, `pred`, `ipred`, `scenario`.
 }
 \description{
 Simulates data from an exponential response model:
 \deqn{pred = e0 + e1 * (1 - exp(-k * dose))}
+}
+\details{
+All combinations of `e0`, `e1`, and `k` will be simulated.
 }
 \examples{
 simulate_exponential(
