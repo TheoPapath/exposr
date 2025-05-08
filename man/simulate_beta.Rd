@@ -8,7 +8,7 @@ simulate_beta(
   dose_levels,
   n_per_dose,
   e0,
-  eMax,
+  emax,
   delta1,
   delta2,
   scal,
@@ -19,61 +19,31 @@ simulate_beta(
 )
 }
 \arguments{
-\item{dose_levels}{Numeric vector of dose levels to simulate.}
+\item{dose_levels}{Numeric vector of dose levels.}
 
-\item{n_per_dose}{Either a single integer (for equal sample size per dose) or a numeric vector of same length as `dose_levels`.}
+\item{n_per_dose}{Sample size per dose level.}
 
-\item{e0}{Baseline effect. Scalar.}
+\item{e0}{Baseline effect.}
 
-\item{eMax}{Maximum effect size. Can be a scalar or vector to simulate multiple scenarios.}
+\item{emax}{Maximum effect.}
 
-\item{delta1}{Left shape parameter of the beta function. Can be scalar or vector.}
+\item{delta1}{Left beta shape parameter.}
 
-\item{delta2}{Right shape parameter of the beta function. Can be scalar or vector.}
+\item{delta2}{Right beta shape parameter.}
 
-\item{scal}{Positive numeric value used to normalize dose (max dose must not exceed `scal`).}
+\item{scal}{Normalization factor for dose (max dose should not exceed `scal`).}
 
-\item{sigma}{Standard deviation of the residual error.}
+\item{sigma}{Residual error SD.}
 
-\item{dist}{Distribution for the residual error: one of "normal", "lognormal", "uniform", "t", or "gamma".}
+\item{dist}{Distribution for residuals: "normal", "lognormal", "uniform", "t", or "gamma".}
 
-\item{df}{Degrees of freedom for the t-distribution (only used if `dist = "t"`).}
+\item{df}{Degrees of freedom for t-distribution.}
 
-\item{seed}{Optional integer to set the random seed for reproducibility.}
+\item{seed}{Optional random seed.}
 }
 \value{
-A data frame with the following columns:
-\describe{
-  \item{id}{Subject identifier}
-  \item{dose}{Administered dose (before scaling)}
-  \item{pred}{Predicted value from the beta model}
-  \item{ipred}{Individual predicted value after adding residual error}
-  \item{scenario}{Label for parameter combination used in the simulation}
-}
+Data frame with id, dose, pred, ipred, and scenario.
 }
 \description{
-Simulates dose-response data using a normalized beta model, as implemented in the function:
-\code{betaMod <- function(dose, e0, eMax, delta1, delta2, scal)}.
-The model computes the response as:
-}
-\details{
-\deqn{f(d) = e0 + \frac{eMax}{\exp(\delta_1 \log(\delta_1) + \delta_2 \log(\delta_2) - (\delta_1 + \delta_2) \log(\delta_1 + \delta_2))} \cdot \left(\frac{d}{\text{scal}}\right)^{\delta_1} (1 - \frac{d}{\text{scal}})^{\delta_2}}
-
-where \eqn{d} is the administered dose, \eqn{e0} is the baseline effect, and \eqn{scal} is a scaling constant.
-}
-\examples{
-sim_data <- simulate_beta(
-  dose_levels = c(0, 5, 10, 20),
-  n_per_dose = 10,
-  e0 = 0,
-  eMax = 1,
-  delta1 = 2,
-  delta2 = 4,
-  scal = 20,
-  sigma = 0.1,
-  dist = "normal",
-  seed = 123
-)
-head(sim_data)
-
+Simulates dose-response data using a normalized beta model.
 }
