@@ -22,7 +22,7 @@ simulate_logistic(
 
 \item{n_per_dose}{Either a single integer (equal sample size per dose) or a vector matching `dose_levels`.}
 
-\item{e0}{Baseline effect.}
+\item{e0}{Baseline effect. Can be a scalar or a vector.}
 
 \item{emax}{Maximum effect.}
 
@@ -39,11 +39,14 @@ simulate_logistic(
 \item{seed}{Optional seed for reproducibility.}
 }
 \value{
-Data frame with columns: `id`, `dose`, `pred`, `ipred`.
+Data frame with columns: `id`, `dose`, `pred`, `ipred`, `scenario`.
 }
 \description{
 Simulates from a logistic dose-response model:
 \deqn{pred = e0 + emax / (1 + exp(-k * (dose - ed50)))}
+}
+\details{
+All combinations of `e0`, `emax`, `ed50`, and `k` will be simulated.
 }
 \examples{
 simulate_logistic(

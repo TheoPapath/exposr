@@ -8,9 +8,10 @@ simulate_beta(
   dose_levels,
   n_per_dose,
   e0,
-  e1,
-  delta,
-  gamma,
+  emax,
+  delta1,
+  delta2,
+  scal,
   sigma,
   dist = "normal",
   df = 3,
@@ -20,39 +21,29 @@ simulate_beta(
 \arguments{
 \item{dose_levels}{Numeric vector of dose levels.}
 
-\item{n_per_dose}{Either a single integer (equal sample size per dose) or a vector matching `dose_levels`.}
+\item{n_per_dose}{Sample size per dose level.}
 
 \item{e0}{Baseline effect.}
 
-\item{e1}{Amplitude of the response.}
+\item{emax}{Maximum effect.}
 
-\item{delta}{Left shape parameter.}
+\item{delta1}{Left beta shape parameter.}
 
-\item{gamma}{Right shape parameter.}
+\item{delta2}{Right beta shape parameter.}
 
-\item{sigma}{Standard deviation for residual error.}
+\item{scal}{Normalization factor for dose (max dose should not exceed `scal`).}
 
-\item{dist}{Residual error distribution: `"normal"` (default), `"lognormal"`, `"uniform"`, `"t"`, or `"gamma"`.}
+\item{sigma}{Residual error SD.}
+
+\item{dist}{Distribution for residuals: "normal", "lognormal", "uniform", "t", or "gamma".}
 
 \item{df}{Degrees of freedom for t-distribution.}
 
-\item{seed}{Optional seed for reproducibility.}
+\item{seed}{Optional random seed.}
 }
 \value{
-Data frame with columns: `id`, `dose`, `pred`, `ipred`.
+Data frame with id, dose, pred, ipred, and scenario.
 }
 \description{
-Simulates data from a scaled beta model:
-\deqn{pred = e0 + e1 * (d / dmax)^delta * (1 - d / dmax)^gamma}
-}
-\examples{
-simulate_beta(
-  dose_levels = c(0, 1, 5, 10),
-  n_per_dose = 10,
-  e0 = 0, e1 = 1, delta = 2, gamma = 3,
-  sigma = 0.2,
-  dist = "normal",
-  seed = 300
-)
-
+Simulates dose-response data using a normalized beta model.
 }

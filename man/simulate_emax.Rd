@@ -10,7 +10,7 @@ simulate_emax(
   e0,
   emax,
   ed50,
-  sigma,
+  sigma = 0,
   dist = "normal",
   df = 3,
   seed = NULL
@@ -21,11 +21,11 @@ simulate_emax(
 
 \item{n_per_dose}{Either a single integer (equal sample size per dose) or a vector matching `dose_levels`.}
 
-\item{e0}{Baseline effect.}
+\item{e0}{Baseline effect. Can be a scalar or a vector.}
 
-\item{emax}{Maximum drug effect.}
+\item{emax}{Maximum drug effect. Can be a scalar or a vector.}
 
-\item{ed50}{Dose producing 50% of `emax`.}
+\item{ed50}{Dose producing 50% of `emax`. Can be a scalar or a vector.}
 
 \item{sigma}{Standard deviation for residual error.}
 
@@ -36,17 +36,20 @@ simulate_emax(
 \item{seed}{Optional seed for reproducibility.}
 }
 \value{
-Data frame with columns: `id`, `dose`, `pred`, `ipred`.
+Data frame with columns: `id`, `dose`, `pred`, `ipred`, `scenario` (combination label).
 }
 \description{
 Simulates individual-level responses from a standard Emax dose-response model:
 \deqn{pred = e0 + emax * dose / (ed50 + dose)}
 }
+\details{
+All combinations of `e0`, `emax`, and `ed50` will be simulated.
+}
 \examples{
 simulate_emax(
   dose_levels = c(0, 5, 10, 20),
   n_per_dose = 10,
-  e0 = 0, emax = 1, ed50 = 10,
+  e0 = c(0, 0.1), emax = c(1, 1.2), ed50 = c(10, 8),
   sigma = 0.2,
   dist = "normal",
   seed = 123
