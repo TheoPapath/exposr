@@ -1,0 +1,17 @@
+| Plot Type                | Function Example           |
+| ------------------------ | -------------------------- |
+| Exposure–Response        | `plot_exposure_response()` |
+| Dose–Response curves     | `plot_dose_response()`     |
+| Decision bands           | `plot_decision_band()`     |
+| PTA heatmaps             | `plot_pta_heatmap()`       |
+| Spaghetti + IQR overlays | `plot_longitudinal()`      |
+| Forest plots             | `plot_forest()`            |
+| Swimmer plots            | `plot_swimmer()`           |
+| Waterfall plots          | `plot_waterfall()`         |
+| Stacked bar for safety   | `plot_safety_stack()`      |
+| KM curves with censoring | `plot_km()`                |
+
+| Plot Type          | Description                                             | Function Name              |
+| ------------------ | ------------------------------------------------------- | -------------------------- |
+| Benefit-Risk grid  | 2D decision space for efficacy vs. safety probabilities | `plot_benefit_risk_grid()` |
+| Traffic light plot | Green/yellow/red indicators by dose and endpoint        | `plot_traffic_light()`     |
