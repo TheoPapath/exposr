@@ -12,12 +12,14 @@
 #' @param scal Numeric. Scaling factor for betaMod (e.g. max dose)
 #' @param e0 Numeric. Baseline effect (default is 0)
 #' @return Numeric. Estimated Emax or model-specific parameter
+#' @export
 #' @examples
 #' calculate_effect_param(delta = 1.5, ed50 = 10, dose = 160, model = "emax")
 #' calculate_effect_param(delta = 1.5, ed50 = 10, dose = 160, model = "sigmoid", hill = 2)
 #' calculate_effect_param(delta = 1.5, ed50 = NA, dose = 160, model = "loglin")
 #' calculate_effect_param(delta = 1.5, ed50 = NA, dose = 160, model = "quadratic")
 #' calculate_effect_param(delta = 1.5, ed50 = NA, dose = 160, model = "betamod", delta1 = 1.2, delta2 = 2, scal = 200)
+
 calculate_effect_param <- function(delta, ed50, dose,
                                    model = c("emax", "sigmoid", "loglin", "quadratic", "betamod"),
                                    hill = 1, delta1 = NULL, delta2 = NULL, scal = NULL, e0 = 0) {

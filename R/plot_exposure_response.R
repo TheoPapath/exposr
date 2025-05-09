@@ -1,42 +1,3 @@
-# Stable version
-
-
-# Currently Implemented
-# Two-panel structure with exposure-response (top) and exposure vs. dose (bottom).
-# Observed data display, optionally (show_points).
-# Group-based coloring, configurable by group_var.
-# Binning and summary by exposure bins (median/mean/geometric mean).
-# External predictions overlay with ribbons.
-# Trend line options (loess, lm, etc.) and CI toggling.
-# Dose-level exposure annotations
-# Geometric mean (diamond)
-# Dose label
-# Y-axis anchoring that respects ylims.
-# Optional vertical median lines and EC50/EC90 crosshairs.
-# Flexible axis labels, limits, log-scaling, and legends.
-# Extensive captioning, dynamically adapting to plot contents.
-# Test dataset with grouped emax-based response generation.
-# Faceted annotations like effect-level lines positioned dynamically.
-
-# To do
-# Return data invisibly (optionally) for downstream use, e.g., return_data = FALSE.
-# User control for 90% range percentiles (e.g., configurable range_quantiles = c(0.05, 0.95)).
-# Optional x-axis annotation of bin boundaries (to show exposure bucket cutoffs).
-
-# Load required libraries
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(patchwork)  # for combining plots
-library(Hmisc)      # for binning and CIs
-library(rlang)      # for tidy evaluation
-
-# Define generic color palette generator
-get_generic_palette <- function(groups) {
-  colors <- RColorBrewer::brewer.pal(max(3, length(groups)), "Set1")
-  setNames(colors[1:length(groups)], groups)
-}
-
 #' Plot Exposure-Response Relationship
 #'
 #' Creates a two-panel ggplot visualization showing the relationship between dose, exposure, and response.
@@ -65,6 +26,74 @@ get_generic_palette <- function(groups) {
 #'
 #' @return A ggplot object with two panels: response vs exposure, and exposure vs dose.
 #' @export
+#' @examples
+# Simulate example data for testing
+#' set.seed(123)
+#' n_placebo_per_trial <- 30
+#' n_active_per_trial <- 120
+#'
+#' df_trialA <- data.frame(
+#' Dose = c(rep(0, n_placebo_per_trial), rep(c(50, 100, 300, 600), each = n_active_per_trial / 4)),
+#' Trial = "Trial A"
+#' )
+#'
+#' df_trialB <- data.frame(
+#'   Dose = c(rep(0, n_placebo_per_trial), rep(c(50, 100, 300, 600), each = n_active_per_trial / 4)),
+#' Trial = "Trial B"
+#' )
+#'
+#' df_demo <- bind_rows(df_trialA, df_trialB)
+#' n <- nrow(df_demo)
+#'
+#' clearance <- ifelse(df_demo$Trial == "Trial A", 5, 6)
+#' rate <- 1 / (df_demo$Dose / clearance)
+#' rate[df_demo$Dose == 0] <- NA
+#' exposure_vals <- rexp(n, rate = rate)
+#' df_demo$Exposure <- ifelse(df_demo$Dose == 0, 0, exposure_vals)
+#'
+#' effect_shift <- ifelse(df_demo$Trial == "Trial A", 0, 1.5)
+#' df_demo$Response <- ifelse(df_demo$Dose == 0,
+#'                            8 + effect_shift + rnorm(n, 0, 0.5),
+#'                            8.5 + effect_shift + (7 * df_demo$Exposure / (50 + df_demo$Exposure)) + rnorm(n, 0, 0.5))
+#'
+#' # Example external prediction data using fitted Emax model
+#' library(minpack.lm)
+#'
+#' # Fit Emax model by trial and generate predictions
+#' external_pred <- df_demo %>%
+#'   filter(Dose > 0) %>%
+#'   group_by(Trial) %>%
+#'   group_modify(~{
+#'     df <- .x
+#'   fit <- try(nlsLM(Response ~ E0 + Emax * Exposure / (EC50 + Exposure),
+#'                    data = df,
+#'                   start = list(E0 = 7, Emax = 6, EC50 = 50)), silent = TRUE)
+#'   if (inherits(fit, "try-error")) return(NULL)
+#'   pred_grid <- data.frame(Exposure = seq(0, max(df$Exposure), length.out = 100))
+#'   preds <- predict(fit, newdata = pred_grid)
+#'   pred_grid$Response <- preds
+#'   pred_grid$Lower <- preds - 0.5
+#'   pred_grid$Upper <- preds + 0.5
+#'   pred_grid$Trial <- df$Trial[1]
+#'  pred_grid
+#'   }) %>%
+#'   ungroup()
+#'
+# Example call
+#' plot_exposure_response(
+#'   df_demo, Dose, Exposure, Response,
+#'   n_bins = 6, ylims = c(5,20),
+#'   # vertical_line = 250,
+#'   summary_type = "geometric",
+#'   add_trend = FALSE,
+#'   # trend_method = "loess",
+#'   trend_ci = TRUE,
+#' trend_ci_level = 0.95,
+#'   group_var = Trial,
+#'   external_df = external_pred,
+#'   external_mapping = list(x = "Exposure", y = "Response", lower = "Lower", upper = "Upper", group = "Trial"),
+#'   log_scale = "none", show_effect_lines = "eff90", effect_label_position = "right"
+#' )
 
 plot_exposure_response <- function(data, dose_var, exposure_var, response_var,
                                    show_median_lines = TRUE,
@@ -80,6 +109,20 @@ plot_exposure_response <- function(data, dose_var, exposure_var, response_var,
                                    add_trend = TRUE, trend_method = c("loess", "lm", "gam", "glm"),
                                    trend_ci = TRUE, trend_ci_level = 0.95,
                                    group_var = NULL) {
+
+  # Load required libraries
+  library(ggplot2)
+  library(dplyr)
+  library(tidyr)
+  library(patchwork)  # for combining plots
+  library(Hmisc)      # for binning and CIs
+  library(rlang)      # for tidy evaluation
+
+  # Define generic color palette generator
+  get_generic_palette <- function(groups) {
+    colors <- RColorBrewer::brewer.pal(max(3, length(groups)), "Set1")
+    setNames(colors[1:length(groups)], groups)
+  }
 
   summary_type <- match.arg(summary_type)
   log_scale <- match.arg(log_scale)
@@ -292,76 +335,9 @@ plot_exposure_response <- function(data, dose_var, exposure_var, response_var,
     ))
 
   return(final_plot)
+
+  # To do
+  # Return data invisibly (optionally) for downstream use, e.g., return_data = FALSE.
+  # User control for 90% range percentiles (e.g., configurable range_quantiles = c(0.05, 0.95)).
+  # Optional x-axis annotation of bin boundaries (to show exposure bucket cutoffs).
 }
-
-
-# Examples
-
-# # Simulate example data for testing
-# set.seed(123)
-# n_placebo_per_trial <- 30
-# n_active_per_trial <- 120
-#
-# df_trialA <- data.frame(
-#   Dose = c(rep(0, n_placebo_per_trial), rep(c(50, 100, 300, 600), each = n_active_per_trial / 4)),
-#   Trial = "Trial A"
-# )
-#
-# df_trialB <- data.frame(
-#   Dose = c(rep(0, n_placebo_per_trial), rep(c(50, 100, 300, 600), each = n_active_per_trial / 4)),
-#   Trial = "Trial B"
-# )
-#
-# df_demo <- bind_rows(df_trialA, df_trialB)
-# n <- nrow(df_demo)
-#
-# clearance <- ifelse(df_demo$Trial == "Trial A", 5, 6)
-# rate <- 1 / (df_demo$Dose / clearance)
-# rate[df_demo$Dose == 0] <- NA
-# exposure_vals <- rexp(n, rate = rate)
-# df_demo$Exposure <- ifelse(df_demo$Dose == 0, 0, exposure_vals)
-#
-# effect_shift <- ifelse(df_demo$Trial == "Trial A", 0, 1.5)
-# df_demo$Response <- ifelse(df_demo$Dose == 0,
-#                            8 + effect_shift + rnorm(n, 0, 0.5),
-#                            8.5 + effect_shift + (7 * df_demo$Exposure / (50 + df_demo$Exposure)) + rnorm(n, 0, 0.5))
-#
-# # Example external prediction data using fitted Emax model
-# library(minpack.lm)
-#
-# # Fit Emax model by trial and generate predictions
-# external_pred <- df_demo %>%
-#   filter(Dose > 0) %>%
-#   group_by(Trial) %>%
-#   group_modify(~{
-#     df <- .x
-#     fit <- try(nlsLM(Response ~ E0 + Emax * Exposure / (EC50 + Exposure),
-#                      data = df,
-#                      start = list(E0 = 7, Emax = 6, EC50 = 50)), silent = TRUE)
-#     if (inherits(fit, "try-error")) return(NULL)
-#     pred_grid <- data.frame(Exposure = seq(0, max(df$Exposure), length.out = 100))
-#     preds <- predict(fit, newdata = pred_grid)
-#     pred_grid$Response <- preds
-#     pred_grid$Lower <- preds - 0.5
-#     pred_grid$Upper <- preds + 0.5
-#     pred_grid$Trial <- df$Trial[1]
-#     pred_grid
-#   }) %>%
-#   ungroup()
-#
-# # Example call
-# plot_exposure_response(
-#   df_demo, Dose, Exposure, Response,
-#   n_bins = 6, ylims = c(5,20),
-#   # vertical_line = 250,
-#   summary_type = "geometric",
-#   add_trend = FALSE,
-#   # trend_method = "loess",
-#   trend_ci = TRUE,
-#   trend_ci_level = 0.95,
-#   group_var = Trial,
-#   external_df = external_pred,
-#   external_mapping = list(x = "Exposure", y = "Response", lower = "Lower", upper = "Upper", group = "Trial"),
-#   log_scale = "none", show_effect_lines = "eff90", effect_label_position = "right"
-# )
-

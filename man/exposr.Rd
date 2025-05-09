@@ -4,9 +4,17 @@
 \name{exposr}
 \alias{exposr-package}
 \alias{exposr}
-\title{exposr: A Pharmacometric Utility Toolkit}
+\title{exposr: A Pharmacometrics Utility Toolkit}
 \description{
-Tools for simulating and visualizing dose–exposure–response relationships.
+The `exposr` package provides a set of reproducible, publication-ready plotting and simulation functions
+tailored to pharmacometrics and clinical pharmacology. It includes tools for dose–response modeling,
+survival analysis, and automated exposure–response summaries.
+}
+\details{
+## Key Functions
+- `kmplot()` – Kaplan–Meier plots with optional hazard ratios, p-values, risk tables, and GSK styling
+- `trendplot()` – Time or exposure trend visualization across doses or subjects
+- `exposr_palette()` – GSK-aligned color palette for visual consistency
 }
 \seealso{
 Useful links:
@@ -17,6 +25,5 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Theodoros Papathanasiou \email{theo.x.papathanasiou@gsk.com}
-
+Theodoros Papathanasiou
 }

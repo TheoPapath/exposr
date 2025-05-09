@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_td_ed.R
 \name{plot_td_ed}
 \alias{plot_td_ed}
-\title{Plot Dose-Response with TD and ED Highlighted}
+\title{Plot Dose–Response with TD and ED Highlighted}
 \usage{
 plot_td_ed(
   e0 = 4.5,
@@ -31,37 +31,26 @@ plot_td_ed(
 
 \item{max_dose}{Numeric. Maximum dose to consider.}
 
-\item{sd_uncertainty}{Numeric. Standard deviation used to simulate uncertainty.}
+\item{sd_uncertainty}{Numeric. Standard deviation for uncertainty simulation.}
 
-\item{seed}{Integer. Seed for reproducibility.}
+\item{seed}{Integer. Random seed.}
 
 \item{transform}{Logical. If TRUE, response is normalized to 0–100%. If FALSE, nominal scale is used.}
 
-\item{show_rect}{Logical. Whether to display ED/TD rectangles and their annotations.}
+\item{show_rect}{Logical. Whether to show TD/ED range rectangles.}
 }
 \value{
 A ggplot object.
 }
 \description{
-This function plots a normalized dose-response relationship using an Emax model,
-highlighting the Target Dose (TD) and Effective Dose (ED) with uncertainty bands.
+This function visualizes a normalized dose–response curve using an Emax model.
+It highlights the Target Dose (TD) and Effective Dose (ED) regions, optionally with uncertainty.
 }
 \examples{
-# Basic example with default parameters
 plot_td_ed()
-
-plot_td_ed(x_breaks = c(0, 20, 40, 80, 160))
-
-# Example with higher target delta and tighter uncertainty
 plot_td_ed(delta = 1.5, sd_uncertainty = 3)
-
-# Example with extended dose range and lower ED proportion
-plot_td_ed(max_dose = 300, p = 0.75)
-
-# Example without transformation
-plot_td_ed(transform = FALSE, sd )
-
-# Example hiding rectangles
+plot_td_ed(max_dose = 300, prop = 0.75)
+plot_td_ed(transform = FALSE, sd_uncertainty = 2)
 plot_td_ed(show_rect = FALSE)
 
 }

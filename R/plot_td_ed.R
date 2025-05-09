@@ -1,7 +1,7 @@
-#' Plot Dose-Response with TD and ED Highlighted
+#' Plot Dose–Response with TD and ED Highlighted
 #'
-#' This function plots a normalized dose-response relationship using an Emax model,
-#' highlighting the Target Dose (TD) and Effective Dose (ED) with uncertainty bands.
+#' This function visualizes a normalized dose–response curve using an Emax model.
+#' It highlights the Target Dose (TD) and Effective Dose (ED) regions, optionally with uncertainty.
 #'
 #' @param e0 Numeric. Placebo effect.
 #' @param emax Numeric. Maximum effect over placebo.
@@ -9,27 +9,18 @@
 #' @param delta Numeric. Target effect over placebo (used to compute TD).
 #' @param prop Numeric. Proportion of maximum effect for ED (e.g. 0.9 for 90%).
 #' @param max_dose Numeric. Maximum dose to consider.
-#' @param sd_uncertainty Numeric. Standard deviation used to simulate uncertainty.
-#' @param seed Integer. Seed for reproducibility.
+#' @param sd_uncertainty Numeric. Standard deviation for uncertainty simulation.
+#' @param seed Integer. Random seed.
 #' @param transform Logical. If TRUE, response is normalized to 0–100%. If FALSE, nominal scale is used.
-#' @param show_rect Logical. Whether to display ED/TD rectangles and their annotations.
+#' @param show_rect Logical. Whether to show TD/ED range rectangles.
+#'
 #' @return A ggplot object.
+#'
 #' @examples
-#' # Basic example with default parameters
 #' plot_td_ed()
-#'
-#' plot_td_ed(x_breaks = c(0, 20, 40, 80, 160))
-#'
-#' # Example with higher target delta and tighter uncertainty
 #' plot_td_ed(delta = 1.5, sd_uncertainty = 3)
-#'
-#' # Example with extended dose range and lower ED proportion
-#' plot_td_ed(max_dose = 300, p = 0.75)
-#'
-#' # Example without transformation
-#' plot_td_ed(transform = FALSE, sd )
-#'
-#' # Example hiding rectangles
+#' plot_td_ed(max_dose = 300, prop = 0.75)
+#' plot_td_ed(transform = FALSE, sd_uncertainty = 2)
 #' plot_td_ed(show_rect = FALSE)
 #'
 #' @export
